@@ -15,7 +15,36 @@ namespace Tongfang.DAU
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDAU();
+            services.AddDAU<ModbusAcquireOptions>((serviceProvider, options) =>
+            {
+                ModbusAcquireOptions mopt1 = new ModbusAcquireOptions()
+                {
+                    ProviderName = typeof(ModbusAcquireProvider).AssemblyQualifiedName,
+                    Equipment = new ModbusEquipment(),
+                    Channel = new ModbusAcquireChannel()
+                };
+                ModbusAcquireOptions mopt2 = new ModbusAcquireOptions()
+                {
+                    ProviderName = typeof(ModbusAcquireProvider).AssemblyQualifiedName,
+                    Equipment = new ModbusEquipment(),
+                    Channel = new ModbusAcquireChannel()
+                };
+                options.Add(mopt1);
+                options.Add(mopt2);
+            });
+
+            services.AddDAU<OpcAcquireOptions>((serviceProvider, options) =>
+            {
+                OpcAcquireOptions oopt = new OpcAcquireOptions()
+                {
+                    ProviderName = typeof(OpcAcquireProvider).AssemblyQualifiedName,
+                    Equipment = new OpcEquipment(),
+                    Channel = new OpcAcquireChannel()
+                };
+                options.Add(oopt);
+            });
+
+            services.AddDAUCore();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -23,11 +52,6 @@ namespace Tongfang.DAU
         {
             var b = app.ApplicationServices.GetRequiredService<IDauCore>();
             b.Start();
-
-            var t1 = app.ApplicationServices.GetService<IList<A>>();
-            var t2 = app.ApplicationServices.GetService<IList<A>>();
-            var t3 = app.ApplicationServices.GetService<ICollection<A>>();
-            var t4 = app.ApplicationServices.GetService<IEnumerable<A>>();
 
             if (env.IsDevelopment())
             {

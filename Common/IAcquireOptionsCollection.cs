@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Tongfang.DAU
 {
-    public class AcquireServicesOptions : List<AcquireOptions>
+    public interface IAcquireOptionsCollection<T> : ICollection<T> where T : AcquireOptions
     {
     }
 }

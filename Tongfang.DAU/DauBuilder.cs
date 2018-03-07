@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Tongfang.DataAcquisition
+namespace Tongfang.DAU
 {
     /// <summary>
     /// DAU创建者接口

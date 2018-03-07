@@ -5,19 +5,25 @@ using System.Reflection;
 
 namespace Tongfang.DAU
 {
+    public interface IAcquireProviderTypeDiscoverer<T> where T : AcquireOptions
+    {
+        IList<TypeInfo> AcquireProviderList { get; }
+    }
+
     /// <summary>
     /// 服务实现类型发现
     /// </summary>
-    public class AcquireProviderTypeDiscoverer
+    public class AcquireProviderTypeDiscoverer<T> : IAcquireProviderTypeDiscoverer<T> where T : AcquireOptions
     {
         private static readonly Dictionary<string, TypeInfo> _dic;
 
         static AcquireProviderTypeDiscoverer()
         {
             _dic = new Dictionary<string, TypeInfo>();
-            foreach (Assembly ab in AppDomain.CurrentDomain.GetAssemblies())
+            ICollection<Assembly> assemblys = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly ab in assemblys)
             {
-                var ts = ab.DefinedTypes.Where(x => x.IsPublic && !x.IsInterface && !x.IsAbstract && x.ImplementedInterfaces.Contains(typeof(IAcquireProvider)));
+                var ts = ab.DefinedTypes.Where(x => x.IsPublic && !x.IsInterface && !x.IsAbstract && x.ImplementedInterfaces.Contains(typeof(IAcquireProvider<T>)));
                 foreach (TypeInfo t in ts)
                 {
                     string key = t.AssemblyQualifiedName;
@@ -40,6 +46,11 @@ namespace Tongfang.DAU
             {
                 return _dic;
             }
+        }
+
+        public IList<TypeInfo> AcquireProviderList
+        {
+            get { return _dic.Values.ToArray(); }
         }
     }
 }

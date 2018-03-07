@@ -13,7 +13,7 @@ namespace Tongfang.DAU
     public class DauCore : IDauCore
     {
         private ICollection<IAcquireService> services;
-        public DauCore(AcquireServiceCollection services)
+        public DauCore(ICollection<IAcquireService> services)
         {
             this.services = services;
         }

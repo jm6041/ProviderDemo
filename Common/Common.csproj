@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Tongfang.DAU</RootNamespace>
+    <AssemblyName>Tongfang.Common</AssemblyName>
+  </PropertyGroup>
+
+</Project>

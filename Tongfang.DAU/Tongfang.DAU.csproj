@@ -12,4 +12,10 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Modbus\Modbus.csproj" />
+    <ProjectReference Include="..\Opc\Opc.csproj" />
+  </ItemGroup>
+
 </Project>
