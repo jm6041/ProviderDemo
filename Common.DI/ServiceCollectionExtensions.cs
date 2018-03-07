@@ -8,19 +8,19 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Tongfang.DAU
 {
-    public static class DauServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddDAU<TOptions>(this IServiceCollection serviceCollection,
+        public static IServiceCollection AddProvider<TOptions, TProvider>(this IServiceCollection serviceCollection,
             Action<IServiceProvider, IAcquireOptionsCollectionBuilder<TOptions>> optionsAction)
-            where TOptions : AcquireOptions
+            where TOptions : AcquireOptions where TProvider : IAcquireProvider<TOptions>
         {
-            AddCoreServices<TOptions>(serviceCollection, optionsAction);
+            AddCoreServices<TOptions, TProvider>(serviceCollection, optionsAction);
             return serviceCollection;
         }
 
-        private static void AddCoreServices<TOptions>(IServiceCollection serviceCollection,
-            Action<IServiceProvider, IAcquireOptionsCollectionBuilder<TOptions>> optionsAction) 
-            where TOptions : AcquireOptions
+        private static void AddCoreServices<TOptions,TProvider>(IServiceCollection serviceCollection,
+            Action<IServiceProvider, IAcquireOptionsCollectionBuilder<TOptions>> optionsAction)
+            where TOptions : AcquireOptions where TProvider : IAcquireProvider<TOptions>
         {
             serviceCollection.TryAddSingleton<IAcquireOptionsCollectionBuilder<TOptions>, AcquireOptionsCollectionBuilder<TOptions>>();
 
@@ -38,8 +38,9 @@ namespace Tongfang.DAU
                 serviceCollection.AddTransient(t);
             }
 
-            serviceCollection.TryAddSingleton<AcquireServiceCollectionBuilder>();
-            serviceCollection.AddSingleton<ICollection<IAcquireService>>((p)=> 
+            serviceCollection.TryAddSingleton(new AcquireServiceCollectionBuilder());
+            
+            serviceCollection.AddSingleton<ICollection<IAcquireService>>((p) =>
             {
                 var b = p.GetRequiredService<AcquireServiceCollectionBuilder>();
                 var opts = p.GetRequiredService<ICollection<TOptions>>();
@@ -53,12 +54,6 @@ namespace Tongfang.DAU
                 }
                 return b.Collection;
             });
-        }
-
-        public static IDauBuilder AddDAUCore(this IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddSingleton<IDauCore, DauCore>();
-            return new DauBuilder(serviceCollection);
         }
     }
 }

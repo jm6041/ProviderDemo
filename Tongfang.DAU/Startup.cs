@@ -20,29 +20,29 @@ namespace Tongfang.DAU
                 ModbusAcquireOptions mopt1 = new ModbusAcquireOptions()
                 {
                     ProviderName = typeof(ModbusAcquireProvider).AssemblyQualifiedName,
-                    Equipment = new ModbusEquipment(),
+                    Equipment = new ModbusEquipment() { Id = 1 },
                     Channel = new ModbusAcquireChannel()
                 };
                 ModbusAcquireOptions mopt2 = new ModbusAcquireOptions()
                 {
                     ProviderName = typeof(ModbusAcquireProvider).AssemblyQualifiedName,
-                    Equipment = new ModbusEquipment(),
+                    Equipment = new ModbusEquipment() { Id = 2 },
                     Channel = new ModbusAcquireChannel()
                 };
                 options.Add(mopt1);
                 options.Add(mopt2);
             });
 
-            services.AddDAU<OpcAcquireOptions>((serviceProvider, options) =>
-            {
-                OpcAcquireOptions oopt = new OpcAcquireOptions()
-                {
-                    ProviderName = typeof(OpcAcquireProvider).AssemblyQualifiedName,
-                    Equipment = new OpcEquipment(),
-                    Channel = new OpcAcquireChannel()
-                };
-                options.Add(oopt);
-            });
+            //services.AddDAU<OpcAcquireOptions>((serviceProvider, options) =>
+            //{
+            //    OpcAcquireOptions oopt = new OpcAcquireOptions()
+            //    {
+            //        ProviderName = typeof(OpcAcquireProvider).AssemblyQualifiedName,
+            //        Equipment = new OpcEquipment(),
+            //        Channel = new OpcAcquireChannel()
+            //    };
+            //    options.Add(oopt);
+            //});
 
             services.AddDAUCore();
         }
@@ -52,6 +52,10 @@ namespace Tongfang.DAU
         {
             var b = app.ApplicationServices.GetRequiredService<IDauCore>();
             b.Start();
+
+            var opts = app.ApplicationServices.GetRequiredService<ICollection<ModbusAcquireOptions>>().ToArray();
+
+            var ss = app.ApplicationServices.GetRequiredService<ICollection<IAcquireService>>().ToArray();
 
             if (env.IsDevelopment())
             {
